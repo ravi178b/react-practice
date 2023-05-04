@@ -3,14 +3,14 @@ import { NavDropdown } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Header = () => {
   return (
     <>
       <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <div className="container-fluid">
-            <Link className="navbar-brand" href="#">
-              Menu
+            <Link className="navbar-brand" to="dashboard">
+              Dashboard
             </Link>
             <button
               className="navbar-toggler"
@@ -47,9 +47,9 @@ const Navbar = () => {
                   <Link
                     className="nav-link active"
                     aria-current="page"
-                    to="/dashboard"
+                    to="/work"
                   >
-                    Dashboard
+                    Work
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -71,8 +71,9 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <NavDropdown title="Dropdown" id="navbarScrollingDropdown">
-                  <NavDropdown.Item to="/profile">Profile</NavDropdown.Item>
-                  <NavDropdown.Item to="/setting">Setting</NavDropdown.Item>
+                  <Link to="/profile">Profile</Link>
+                  <br></br>
+                  <Link to="/setting">Setting</Link>
                   <NavDropdown.Divider />
                 </NavDropdown>
               </ul>
@@ -84,4 +85,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Header;
