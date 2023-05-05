@@ -10,10 +10,13 @@ import SignUp from "./components/SignUp"
 import Login from "./components/Login"
 import Header from "./components/Header";
 import Dashboard from "./components/Dashboard";
+import Contact from "./components/Contact";
+import Logout from "./components/Logout";
 function App() {
   return (
     <>
       <div className="App">
+     
         <BrowserRouter>
           <Header></Header>
           <Routes>
@@ -26,6 +29,9 @@ function App() {
             <Route path="/login" element={<Login />}></Route>
             <Route path="/work" element={<Work/>}></Route>
             <Route path="/dashboard" element={<Dashboard/>}></Route>
+            <Route path="/contact" element={<Contact/>}></Route>
+            <Route path="/logout" element={<Logout/>}></Route>
+            
           </Routes>
         </BrowserRouter>
       </div>

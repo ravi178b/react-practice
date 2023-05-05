@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const Navigate = useNavigate();
@@ -13,21 +15,36 @@ const Login = () => {
     setPassword(event.target.value);
   };
   const handleApi = () => {
-    console.log(email, password);
     axios
       .post("https://reqres.in/api/login", {
         email: email,
         password: password,
       })
-      .then((result) => {
-        console.log(result);
-        alert("login successfully");
-        localStorage.setItem("token", result.data.token);
-        Navigate("/dashboard");
+      .then((res) => {
+        console.log(res.data);
+
+        const token1 = "QpwL5tke4Pnpja7X4";
+        const token2 = localStorage.getItem("token");
+
+        if (token1 === token2) {
+          console.log('string125558')
+          toast.success("Success Notification !", {
+            position: "top-center",
+          });
+          Navigate("/dashboard");
+        } else {
+          alert("Invalid email and password");
+          toast.error("Error Notification!", {
+            position: "top-center",
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
         alert("server err");
+      });
+      toast.success("Success Notification !", {
+        position: "top-center",
       });
   };
   return (
@@ -63,8 +80,7 @@ const Login = () => {
                             </label>
                           </div>
                         </div>
-                        localStorage.setItem('token',result.data.token)
-                        Navigate('/navbar')
+
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                           <div className="form-outline flex-fill mb-0">
@@ -108,6 +124,7 @@ const Login = () => {
           </div>
         </div>
       </section>
+      <ToastContainer />
     </div>
   );
 };

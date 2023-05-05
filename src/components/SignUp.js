@@ -1,40 +1,49 @@
 import axios from "axios";
-import {  BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
-import Dashboard from './Work';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import React, { useState } from "react";
 
 const SignUp = () => {
-  
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const handleName =(event)=>{
-    setName(event.target.value)
-  }
-  const handleEmail =(event)=>{
-    setEmail(event.target.value)
-  }
-  const handlePassword =(event)=>{
-    setPassword(event.target.value)
-  }
-  const handleApi =()=>{
-    console.log(email,password)
-    axios.post('https://reqres.in/api/register',{
-      email:email,
-      password:password,
-    })
-    .then(result =>{
-      console.log(result.data.token, 'token')
-      alert('signup successfully')
-     
-    })
-    .catch(err =>{
-      console.log(err)
-      alert('server err')
-    })
-  }
-  
+  const handleName = (event) => {
+    setName(event.target.value);
+  };
+  const handleEmail = (event) => {
+    setEmail(event.target.value);
+  };
+  const handlePassword = (event) => {
+    setPassword(event.target.value);
+  };
+  const handleApi = () => {
+    axios
+      .post("https://reqres.in/api/register", {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        console.log(res.data, "token");
+        const token = "QpwL5tke4Pnpja7X4";
+        localStorage.setItem("token", token);
+        
+           navigate("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error Notification!", {
+          position: "top-center",
+        });
+        alert("server err");
+      });
+      toast.success("Signup Successfull", {
+        position: "top-center",
+      });
+  };
+
   return (
     <div>
       <section className="vh-100">
@@ -50,11 +59,10 @@ const SignUp = () => {
                       </p>
 
                       <form className="mx-1 mx-md-4">
-                      <div className="d-flex flex-row align-items-center mb-4">
+                        <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                           <div className="form-outline flex-fill mb-0">
                             <input
-                           
                               type="text"
                               id="form3Example4c"
                               value={name}
@@ -69,7 +77,6 @@ const SignUp = () => {
                             </label>
                           </div>
                         </div>
-
 
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
@@ -111,12 +118,13 @@ const SignUp = () => {
 
                         <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                           <button
-                           onClick={handleApi}
+                            onClick={handleApi}
                             type="button"
                             className="btn btn-primary btn-lg"
                           >
                             SignUp
                           </button>
+                          <ToastContainer />
                         </div>
                       </form>
                     </div>

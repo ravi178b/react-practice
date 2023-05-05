@@ -1,17 +1,25 @@
 import React from "react";
 import { NavDropdown } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 import { Link } from "react-router-dom";
+import { Nav } from "react-bootstrap";
 
 const Header = () => {
+  let user = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  function logout() {
+    localStorage.clear();
+    navigate("/login");
+  }
+
   return (
     <>
       <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <div className="container-fluid">
-            <Link className="navbar-brand" to="dashboard">
-              Dashboard
-            </Link>
+            <Link className="navbar-brand">Dashboard</Link>
             <button
               className="navbar-toggler"
               type="button"
@@ -47,6 +55,15 @@ const Header = () => {
                   <Link
                     className="nav-link active"
                     aria-current="page"
+                    to="/contact"
+                  >
+                    Contact
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    className="nav-link active"
+                    aria-current="page"
                     to="/work"
                   >
                     Work
@@ -70,10 +87,14 @@ const Header = () => {
                     Login
                   </Link>
                 </li>
+                
                 <NavDropdown title="Dropdown" id="navbarScrollingDropdown">
                   <Link to="/profile">Profile</Link>
                   <br></br>
                   <Link to="/setting">Setting</Link>
+                  <br></br>
+                 <button onClick={logout}>Logout</button>
+
                   <NavDropdown.Divider />
                 </NavDropdown>
               </ul>
