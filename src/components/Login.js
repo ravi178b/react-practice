@@ -1,10 +1,13 @@
 import axios from "axios";
+import { useForm } from "react-hook-form";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
+  const { register, handleSubmit,errors } = useForm();
   const Navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -14,7 +17,8 @@ const Login = () => {
   const handlePassword = (event) => {
     setPassword(event.target.value);
   };
-  const handleApi = () => {
+  const onSubmit = (event) => {
+    event.preventDefault();
     axios
       .post("https://reqres.in/api/login", {
         email: email,
@@ -25,15 +29,12 @@ const Login = () => {
 
         const token1 = "QpwL5tke4Pnpja7X4";
         const token2 = localStorage.getItem("token");
-
         if (token1 === token2) {
-          console.log('string125558')
-          toast.success("Success Notification !", {
+          toast.success("Login Successfully !", {
             position: "top-center",
           });
           Navigate("/dashboard");
         } else {
-          alert("Invalid email and password");
           toast.error("Error Notification!", {
             position: "top-center",
           });
@@ -41,81 +42,103 @@ const Login = () => {
       })
       .catch((err) => {
         console.log(err);
+        toast.error(" something error!", {
+          position: "top-center",
+        });
         alert("server err");
       });
-      toast.success("Success Notification !", {
-        position: "top-center",
-      });
+    toast.success("Success Notification !", {
+      position: "top-center",
+    });
   };
   return (
-    <div>
-      <section className="vh-100">
-        <div className="container h-100">
+    <>
+      <section className="vh-100" style={{ backgroundColor: "#9A616D" }}>
+        <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col-lg-12 col-xl-11">
-              <div className="card text-black">
-                <div className="card-body p-md-5">
-                  <div className="row justify-content-center">
-                    <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                      <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                        Login
-                      </p>
-
-                      <form className="mx-1 mx-md-4">
-                        <div className="d-flex flex-row align-items-center mb-4">
-                          <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                          <div className="form-outline flex-fill mb-0">
-                            <input
-                              type="email"
-                              onChange={handleEmail}
-                              value={email}
-                              id="form3Example3c"
-                              className="form-control"
-                            />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example3c"
-                            >
-                              Your Email
-                            </label>
-                          </div>
+            <div className="col col-xl-10">
+              <div className="card" style={{ borderRadius: "1rem" }}>
+                <div className="row g-0">
+                  <div className="col-md-6 col-lg-5 d-none d-md-block">
+                    <img
+                      src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
+                      alt="login form"
+                      className="img-fluid"
+                      style={{ borderRadius: "1rem 0 0 1rem" }}
+                    />
+                  </div>
+                  <div className="col-md-6 col-lg-7 d-flex align-items-center">
+                    <div className="card-body p-4 p-lg-5 text-black">
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="d-flex align-items-center mb-3 pb-1">
+                          <span className="h1 fw-bold mb-0">Login</span>
                         </div>
 
-                        <div className="d-flex flex-row align-items-center mb-4">
-                          <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
-                          <div className="form-outline flex-fill mb-0">
-                            <input
-                              type="password"
-                              value={password}
-                              onChange={handlePassword}
-                              id="form3Example4c"
-                              className="form-control"
-                            />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example4c"
-                            >
-                              Password
-                            </label>
-                          </div>
+                        <h5
+                          className="fw-normal mb-3 pb-3"
+                          style={{ letterSpacing: "1px" }}
+                        >
+                          Sign into your account
+                        </h5>
+
+                        <div className="form-outline mb-4">
+                          <input
+                            type="email"
+                            id="email"
+                            onChange={handleEmail}
+                            placeholder="Email"
+                            value={email}
+                            className="form-control form-control-lg"
+                            name="email"
+                            {...register('email')({required:"email is required",pattern:{value:/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i,message:"this is not a valid email address"}})}
+                          />
+                          <label className="form-label" htmlFor="form2Example17">
+                            Email address
+                          </label>
                         </div>
-                        <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                        <p> {errors.email?.message}</p>
+
+                        <div className="form-outline mb-4">
+                          <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            name="password"
+                            required
+                            placeholder="password"
+                            onChange={handlePassword}
+                            {...register('password')({required:"password is required",minLength:{value:4,message:"password must be more than 4 character"}})}
+                            className="form-control form-control-lg"
+                          />
+                          <label className="form-label" htmlFor="form2Example27">
+                            Password
+                          </label>
+                        </div>
+                        <p> {errors.password?.message}</p>
+
+                        <div className="pt-1 mb-4">
                           <button
-                            onClick={handleApi}
+                            className="btn btn-dark btn-lg btn-block"
+                           
                             type="button"
-                            className="btn btn-primary btn-lg"
                           >
-                            login
+                            Login
                           </button>
                         </div>
+
+                        <a className="small text-muted" href="#!">
+                          Forgot password?
+                        </a>
+                        <p
+                          className="mb-5 pb-lg-2"
+                          style={{ color: "#393f81" }}
+                        >
+                          Don't have an account?{" "}
+                          <Link to="/signup" style={{ color: "#393f81" }}>
+                            Register here
+                          </Link>
+                        </p>
                       </form>
-                    </div>
-                    <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                      <img
-                        src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                        className="img-fluid"
-                        alt="Sample image"
-                      />
                     </div>
                   </div>
                 </div>
@@ -124,8 +147,9 @@ const Login = () => {
           </div>
         </div>
       </section>
+
       <ToastContainer />
-    </div>
+    </>
   );
 };
 

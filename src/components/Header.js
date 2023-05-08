@@ -89,11 +89,12 @@ const Header = () => {
                 </li>
                 
                 <NavDropdown title="Dropdown" id="navbarScrollingDropdown">
-                  <Link to="/profile">Profile</Link>
+                  <Link style={{color:"black"}}to="/profile">Profile</Link>
                   <br></br>
-                  <Link to="/setting">Setting</Link>
+                  <Link style={{color:"black"}} to="/setting">Setting</Link>
                   <br></br>
                  <button onClick={logout}>Logout</button>
+                
 
                   <NavDropdown.Divider />
                 </NavDropdown>
