@@ -2,46 +2,52 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-
+import { Formik } from "formik";
+import * as Yup from "yup";
 import React, { useState } from "react";
+import {AiOutlineEyeInvisible} from "react-icons/ai";
+import {AiOutlineEye} from "react-icons/ai";
+
+const schema = Yup.object().shape({
+  name: Yup.string()
+    .required("Name is a required field") ,
+
+  email: Yup.string()
+    .required("Email is a required field")
+    .email("Invalid email format"),
+  password: Yup.string()
+    .required("Password is a required field")
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
+});
 
 const SignUp = () => {
-  const initialValues = { name: '',email: '', password: '' };
-  const validationSchema = Yup.object({
-    name :Yup.string().required('Required'),
-    email: Yup.string().email('Invalid email address').required('Required'),
-    password: Yup.string().required('Required'),
-  });
   const navigate = useNavigate();
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const handleName = (event) => {
-    setName(event.target.value);
-  };
-  const handleEmail = (event) => {
-    setEmail(event.target.value);
-  };
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
-  const handleApi = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  
+
+  const handleSubmit = (values) => {
+
     axios
       .post("https://reqres.in/api/register", {
-        email: email,
-        password: password,
+        email: values.email,
+        password: values.password,
       })
       .then((res) => {
         console.log(res.data, "token");
+       
+        const token = "QpwL5tke4Pnpja7X4";
+        localStorage.setItem("token", token);
         toast.success("Signup Successfull", {
           position: "top-center",
         });
-        const token = "QpwL5tke4Pnpja7X4";
-        localStorage.setItem("token", token);
+        setTimeout(()=>{
+          navigate("/login");
+        },2000)
 
-        navigate("/login");
       })
       .catch((err) => {
         console.log(err);
@@ -71,87 +77,129 @@ const SignUp = () => {
                       style={{ borderRadius: "1rem 0 0 1rem" }}
                     />
                   </div>
-                  <div className="col-md-6 col-lg-7 d-flex align-items-center">
-                    <div className="card-body p-4 p-lg-5 text-black">
-                      <form>
-                        <div className="d-flex align-items-center mb-3 pb-1">
-                          <i
-                            className="fas fa-cubes fa-2x me-3"
-                            style={{ color: "#ff6219" }}
-                          ></i>
-                          <span className="h1 fw-bold mb-0">SignUp</span>
-                        </div>
 
-                        <h5
-                          className="fw-normal mb-3 pb-3"
-                          style={{ letterSpacing: "1px" }}
-                        >
-                          Create your account
-                        </h5>
-                        <div className="form-outline mb-4">
-                          <input
-                            type="name"
-                            id="form2Example17"
-                            onChange={handleName}
-                            placeholder=" Enter Your Name"
-                            value={name}
-                            className="form-control form-control-lg"
-                            name="Your Name"
-                            required
-                          />
-                          <label className="form-label" htmlFor="form2Example17">
-                            Your Name
-                          </label>
-                        </div>
-                        <div className="form-outline mb-4">
-                          <input
-                            type="email"
-                            id="form2Example17"
-                            onChange={handleEmail}
-                            placeholder="Enter Email Address"
-                            value={email}
-                            className="form-control form-control-lg"
-                            name="email"
-                            required
-                          />
-                          <label className="form-label" htmlFor="form2Example17">
-                            Email address
-                          </label>
-                        </div>
+                  <Formik
+                    validationSchema={schema}
+                    initialValues={{ name: "", email: "", password: "" }}
+                    onSubmit={handleSubmit}
+                  >
+                    {({
+                      values,
+                      errors,
+                      touched,
+                      handleChange,
+                      handleBlur,
+                      handleSubmit,
+                    }) => (
+                      <div className="col-md-6 col-lg-7 d-flex align-items-center">
+                        <div className="card-body p-4 p-lg-5 text-black">
+                          <form noValidate onSubmit={handleSubmit}>
+                            <div className="d-flex align-items-center mb-3 pb-1">
+                              <i
+                                className="fas fa-cubes fa-2x me-3"
+                                style={{ color: "#ff6219" }}
+                              ></i>
+                              <span className="h1 fw-bold mb-0">SignUp</span>
+                            </div>
 
-                        <div className="form-outline mb-4">
-                          <input
-                            type="password"
-                            id="form2Example27"
-                            value={password}
-                            placeholder="Enter password"
-                            onChange={handlePassword}
-                            className="form-control form-control-lg"
-                          />
-                          <label className="form-label" htmlFor="form2Example27">
-                            Password
-                          </label>
-                        </div>
+                            <h5
+                              className="fw-normal mb-3 pb-3"
+                              style={{ letterSpacing: "1px" }}
+                            >
+                              Create your account
+                            </h5>
+                            <div className="form-outline mb-4">
+                            <label
+                                className="form-label"
+                                htmlFor="form2Example17"
+                              >
+                                Your Name
+                              </label>
+                              <hr/>
+                              <input
+                                type="name"
+                                name="name"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.name}
+                                placeholder="username"
+                                className="form-control inp_text"
+                                id="name"
+                                style={{ borderColor: errors.name ? "red": ""}}
+                              />
+                            
+                            </div>
+                            <p className="error" style={{color: errors.name ? "red": ""}}>
+                              {errors.name && touched.name && errors.name}
+                            </p>
+                            <div className="form-outline mb-4">
+                            <label
+                                className="form-label"
+                                htmlFor="form2Example17"
+                              >
+                                Email address
+                              </label>
+                              <hr/>
+                              <input
+                                type="email"
+                                name="email"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.email}
+                                placeholder="Enter email id / username"
+                                className="form-control inp_text"
+                                id="email"
+                                style={{ borderColor: errors.email ? "red": ""}}
+                              />
+                              
+                            </div>
+                            <p className="error" style={{color: errors.email ? "red": ""}}>
+                              {errors.email && touched.email && errors.email}
+                            </p>
 
-                        <div className="pt-1 mb-4">
-                          <button
-                            className="btn btn-dark btn-lg btn-block"
-                            onClick={handleApi}
-                            type="button"
-                          >
-                            SignUp
-                          </button>
+                            <div className="form-outline mb-4">
+                            <label
+                                className="form-label"
+                                htmlFor="form2Example27"
+                              >
+                                Password
+                              </label>
+                              <hr/>
+                              <input
+                                 type={showPassword ? "text" : "password"}
+                                name="password"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.password}
+                                placeholder="Enter password"
+                                // className="form-control"
+                                style={{ borderColor: errors.password ? "red": ""}}
+                              />
+                              <button                              
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? <AiOutlineEye/> : <AiOutlineEyeInvisible/>}
+                              </button>
+                            </div>
+                            <p className="error" style={{color: errors.password ? "red": ""}}>
+                              {errors.password &&
+                                touched.password &&
+                                errors.password}
+                            </p>
+                            <div className="pt-1 mb-4">
+                              <button
+                                className="btn btn-dark btn-lg btn-block"
+                                type="submit"
+                              >
+                                SignUp
+                              </button>
+                            </div>
+                          </form>
                         </div>
-
-                        {/* <a href="#!" className="small text-muted">
-                          Terms of use.
-                        </a>
-                        <a href="#!" className="small text-muted">
-                          Privacy policy
-                        </a> */}
-                      </form>
-                    </div>
-                  </div>
+                      </div>
+                    )}
+                  </Formik>
                 </div>
               </div>
             </div>
@@ -161,7 +209,7 @@ const SignUp = () => {
 
       <ToastContainer />
     </>
-  );
+  );  
 };
 
 export default SignUp;

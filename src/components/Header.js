@@ -10,7 +10,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   function logout() {
-    localStorage.clear();
+    // localStorage.clear();
+    localStorage.removeItem('token');
     navigate("/login");
   }
 
