@@ -5,12 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import React, { useState } from "react";
-import {AiOutlineEyeInvisible} from "react-icons/ai";
-import {AiOutlineEye} from "react-icons/ai";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { AiOutlineEye } from "react-icons/ai";
 
 const schema = Yup.object().shape({
   name: Yup.string()
-    .required("Name is a required field") ,
+    .matches(/^[A-Za-z]+$/, "Username must contain only letters")
+    .required("Username is required"),
 
   email: Yup.string()
     .required("Email is a required field")
@@ -27,10 +28,11 @@ const schema = Yup.object().shape({
 const SignUp = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values,{ setSubmitting }) => {
 
+    console.log(values);
+  setSubmitting(false);
     axios
       .post("https://reqres.in/api/register", {
         email: values.email,
@@ -38,16 +40,15 @@ const SignUp = () => {
       })
       .then((res) => {
         console.log(res.data, "token");
-       
+
         const token = "QpwL5tke4Pnpja7X4";
         localStorage.setItem("token", token);
         toast.success("Signup Successfull", {
           position: "top-center",
         });
-        setTimeout(()=>{
+        setTimeout(() => {
           navigate("/login");
-        },2000)
-
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
@@ -84,6 +85,7 @@ const SignUp = () => {
                     onSubmit={handleSubmit}
                   >
                     {({
+                      isSubmitting,
                       values,
                       errors,
                       touched,
@@ -109,37 +111,41 @@ const SignUp = () => {
                               Create your account
                             </h5>
                             <div className="form-outline mb-4">
-                            <label
+                              <label
                                 className="form-label"
                                 htmlFor="form2Example17"
                               >
                                 Your Name
                               </label>
-                              <hr/>
+                              <hr />
                               <input
                                 type="name"
                                 name="name"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.name}
-                                placeholder="username"
+                                placeholder="Your Name"
                                 className="form-control inp_text"
                                 id="name"
-                                style={{ borderColor: errors.name ? "red": ""}}
+                                style={{
+                                  borderColor: errors.name ? "red" : "",
+                                }}
                               />
-                            
                             </div>
-                            <p className="error" style={{color: errors.name ? "red": ""}}>
+                            <p
+                              className="error"
+                              style={{ color: errors.name ? "red" : "" }}
+                            >
                               {errors.name && touched.name && errors.name}
                             </p>
                             <div className="form-outline mb-4">
-                            <label
+                              <label
                                 className="form-label"
                                 htmlFor="form2Example17"
                               >
                                 Email address
                               </label>
-                              <hr/>
+                              <hr />
                               <input
                                 type="email"
                                 name="email"
@@ -149,40 +155,53 @@ const SignUp = () => {
                                 placeholder="Enter email id / username"
                                 className="form-control inp_text"
                                 id="email"
-                                style={{ borderColor: errors.email ? "red": ""}}
+                                style={{
+                                  borderColor: errors.email ? "red" : "",
+                                }}
                               />
-                              
                             </div>
-                            <p className="error" style={{color: errors.email ? "red": ""}}>
+                            <p
+                              className="error"
+                              style={{ color: errors.email ? "red" : "" }}
+                            >
                               {errors.email && touched.email && errors.email}
                             </p>
 
                             <div className="form-outline mb-4">
-                            <label
+                              <label
                                 className="form-label"
                                 htmlFor="form2Example27"
                               >
                                 Password
                               </label>
-                              <hr/>
+                              <hr />
                               <input
-                                 type={showPassword ? "text" : "password"}
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.password}
                                 placeholder="Enter password"
                                 // className="form-control"
-                                style={{ borderColor: errors.password ? "red": ""}}
+                                style={{
+                                  borderColor: errors.password ? "red" : "",
+                                }}
                               />
-                              <button                              
+                              <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                               >
-                                {showPassword ? <AiOutlineEye/> : <AiOutlineEyeInvisible/>}
+                                {showPassword ? (
+                                  <AiOutlineEye />
+                                ) : (
+                                  <AiOutlineEyeInvisible />
+                                )}
                               </button>
                             </div>
-                            <p className="error" style={{color: errors.password ? "red": ""}}>
+                            <p
+                              className="error"
+                              style={{ color: errors.password ? "red" : "" }}
+                            >
                               {errors.password &&
                                 touched.password &&
                                 errors.password}
@@ -190,6 +209,7 @@ const SignUp = () => {
                             <div className="pt-1 mb-4">
                               <button
                                 className="btn btn-dark btn-lg btn-block"
+                                disabled={isSubmitting}
                                 type="submit"
                               >
                                 SignUp
@@ -209,7 +229,7 @@ const SignUp = () => {
 
       <ToastContainer />
     </>
-  );  
+  );
 };
 
 export default SignUp;

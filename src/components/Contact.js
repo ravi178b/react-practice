@@ -1,24 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
+import PhoneInput from "react-phone-number-input";
+
+import PhoneInputWithCountry from "react-phone-number-input/react-hook-form";
 import "./Contact.css";
 import { Formik } from "formik";
+
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+// const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
 
 const schema = Yup.object().shape({
-  name: Yup.string().required("Name is a required field"),
+  
+
+  name: Yup.string()
+    .required("Username is required")
+    .typeError("Please enter only letters")
+    .matches(/^[A-Za-z]+$/, "Username must contain only letters"),
   email: Yup.string()
     .required("Email is a required field")
     .email("Invalid email format"),
-  contact: Yup.string().required("contact is a required field"),
+  // countryCode: Yup.string().required('Country code is required'),
+  contact: Yup.string()
+    .required("contact is a required field")
+    .matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, "Contact number must be between 10 and 14 digits")
+    .typeError("Please enter only numbers"),
 
-  message: Yup.string().required("Message is a required field"),
+  message: Yup.string()
+    .matches(/^[A-Za-z]+$/, "message must contain only letters")
+    .required("Message is a required field"),
 });
 
-const handleSubmit = (values) => {
-
-  console.log(handleSubmit);
+const handleSubmit = (values, { setSubmitting }) => {
+  console.log(values);
+  setSubmitting(false);
 };
 
 const Contact = () => {
+  const [value, setValue] = useState();
+
   return (
     <div>
       <section className="vh-100">
@@ -26,10 +46,11 @@ const Contact = () => {
           <div className="row d-flex justify-content-center align-items-center h-100">
             <Formik
               validationSchema={schema}
-              initialValues={{ name: "", email: "", contact: "", message: "" }}
+              initialValues={{ name: "", email: "",countryCode: '', phone: "", message: "" }}
               onSubmit={handleSubmit}
             >
               {({
+                isSubmitting,
                 values,
                 errors,
                 touched,
@@ -53,7 +74,7 @@ const Contact = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.name}
-                            placeholder="username"
+                            placeholder="Your Name"
                             className="form-control inp_text"
                             id="name"
                             style={{ borderColor: errors.name ? "red" : "" }}
@@ -79,7 +100,7 @@ const Contact = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.email}
-                            placeholder="username"
+                            placeholder="Your email"
                             className="form-control inp_text"
                             id="email"
                             style={{ borderColor: errors.email ? "red" : "" }}
@@ -98,24 +119,41 @@ const Contact = () => {
                           >
                             Your Contact Number
                           </label>
-                          <input
-                            type="number"
+
+                          <PhoneInput
+                            name="phone" 
+                            id="phone"
+                            className="PhoneInput"
+                            international
+                            defaultCountry="RU"
+                            value={value}
+                            onChange={setValue}
+                            style={{ borderColor: errors.phone ? "red" : "" }}
+                          />
+
+                          {/* <input
+                            type="text"
                             name="contact"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.contact}
-                            placeholder="username"
+                            placeholder="Your contact"
                             className="form-control inp_text"
                             id="contact"
                             style={{ borderColor: errors.contact ? "red" : "" }}
-                          />
+                          /> */}
                         </div>
-                        <p
+
+                        {errors.phone && touched.phone && <div style={{ color: errors.phone ? "red" : "" }}>{errors.phone}</div>}
+      {errors.countryCode && touched.countryCode && (
+        <div>{errors.countryCode}</div>
+      )}
+                        {/* <p
                           className="text-red-400"
                           style={{ color: errors.contact ? "red" : "" }}
                         >
                           {errors.contact && touched.contact && errors.contact}
-                        </p>
+                        </p> */}
 
                         <div className="form-outline mb-2">
                           <label
@@ -143,11 +181,13 @@ const Contact = () => {
                           {errors.message && touched.message && errors.message}
                         </p>
                         <p className="text-center mb-0">
-                          <input
-                            type="submit"
+                          <button
+                            disabled={isSubmitting}
                             className="btn btn-dark btn-lg btn-block w-100 text-uppercase"
-                            value="Submit Now"
-                          />
+                            type="submit"
+                          >
+                            Submit Now
+                          </button>
                         </p>
                       </div>
                     </form>

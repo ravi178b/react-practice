@@ -11,7 +11,7 @@ const Header = () => {
 
   function logout() {
     // localStorage.clear();
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     navigate("/login");
   }
 
@@ -88,14 +88,20 @@ const Header = () => {
                     Login
                   </Link>
                 </li>
-                
+
                 <NavDropdown title="Dropdown" id="navbarScrollingDropdown">
-                  <Link style={{color:"black"}}to="/profile">Profile</Link>
+                  <Link style={{ color: "black" }} to="/profile">
+                    Profile
+                  </Link>
                   <br></br>
-                  <Link style={{color:"black"}} to="/setting">Setting</Link>
+                  <hr></hr>
+                  <Link style={{ color: "black" }} to="/setting">
+                    Setting
+                  </Link>
+
                   <br></br>
-                 <button onClick={logout}>Logout</button>
-                
+                  <hr></hr>
+                  <button onClick={logout}>Logout</button>
 
                   <NavDropdown.Divider />
                 </NavDropdown>

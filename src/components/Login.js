@@ -17,6 +17,7 @@ const schema = Yup.object().shape({
     .min(8, "Password must be at least 8 characters")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
 });
@@ -26,7 +27,9 @@ const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { setSubmitting }) => {
+    console.log(values);
+    setSubmitting(false);
     axios
       .post("https://reqres.in/api/login", {
         email: values.email,
@@ -86,8 +89,9 @@ const Login = () => {
                     onSubmit={handleSubmit}
                   >
                     {({
+                      isSubmitting,
                       values,
-                      ErrorMessage,
+
                       errors,
                       touched,
                       handleChange,
@@ -152,7 +156,7 @@ const Login = () => {
                                 onBlur={handleBlur}
                                 value={values.password}
                                 placeholder="Enter password"
-                                // className="form-control"
+                                //  className="form-control"
                                 style={{
                                   borderColor: errors.password ? "red" : "",
                                 }}
@@ -189,6 +193,7 @@ const Login = () => {
                             <div className="pt-1 mb-4">
                               <button
                                 className="btn btn-dark btn-lg btn-block"
+                                disabled={isSubmitting}
                                 type="submit"
                               >
                                 Login
