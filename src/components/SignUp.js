@@ -10,6 +10,8 @@ import { AiOutlineEye } from "react-icons/ai";
 
 const schema = Yup.object().shape({
   name: Yup.string()
+    .min(3, "Name must be at least 3 characters")
+    .max(50, "Too Long!")
     .matches(/^[A-Za-z]+$/, "Username must contain only letters")
     .required("Username is required"),
 
@@ -29,10 +31,9 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (values,{ setSubmitting }) => {
-
+  const handleSubmit = (values, { setSubmitting }) => {
     console.log(values);
-  setSubmitting(false);
+    setSubmitting(false);
     axios
       .post("https://reqres.in/api/register", {
         email: values.email,

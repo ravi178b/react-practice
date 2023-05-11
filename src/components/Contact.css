@@ -4,10 +4,3 @@ background-color: #9A616D;
 .card shadow-2-strong{
     border: radius 3rem;;
 }
-.PhoneInput{
-    width: 30PX;
-}
-.phoneInputInput{
-    height: 60px;
-    border-radius: 20;
-}
