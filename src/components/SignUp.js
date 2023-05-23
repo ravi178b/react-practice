@@ -1,4 +1,5 @@
 import axios from "axios";
+import "./SignUp.css";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,11 +10,12 @@ import { AiOutlineEyeInvisible } from "react-icons/ai";
 import { AiOutlineEye } from "react-icons/ai";
 
 const schema = Yup.object().shape({
-  name: Yup.string()
-    .min(3, "Name must be at least 3 characters")
-    .max(50, "Too Long!")
-    .matches(/^[A-Za-z]+$/, "Username must contain only letters")
-    .required("Username is required"),
+  username: Yup.string()
+    .min(4, "Username must be at least 4 characters long")
+    .max(15, "Username must be no longer than 15 characters")
+    .required("Username is required")
+    .typeError("username must be a string")
+    .matches(/^[A-Za-z]+$/, "Username must contain only letters"),
 
   email: Yup.string()
     .required("Email is a required field")
@@ -28,6 +30,11 @@ const schema = Yup.object().shape({
 });
 
 const SignUp = () => {
+  const handleKeyPress = (e) => {
+    if (e.charCode === 32) {
+      e.preventDefault();
+    }
+  };
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -58,15 +65,12 @@ const SignUp = () => {
         });
         alert("server err");
       });
-    // toast.success("Signup Successfull", {
-    //   position: "top-center",
-    // });
   };
 
   return (
     <>
       <section className="vh-100" style={{ backgroundColor: "#9A616D" }}>
-        <div className="container py-5 h-100">
+        <div className="container py-1 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col col-xl-10">
               <div className="card" style={{ borderRadius: "1rem" }}>
@@ -82,7 +86,7 @@ const SignUp = () => {
 
                   <Formik
                     validationSchema={schema}
-                    initialValues={{ name: "", email: "", password: "" }}
+                    initialValues={{ username: "", email: "", password: "" }}
                     onSubmit={handleSubmit}
                   >
                     {({
@@ -112,49 +116,47 @@ const SignUp = () => {
                               Create your account
                             </h5>
                             <div className="form-outline mb-4">
-                              <label
-                                className="form-label"
-                                htmlFor="form2Example17"
-                              >
-                                Your Name
+                              <label className="form-label" htmlFor="username">
+                                UserName
                               </label>
-                              <hr />
+
                               <input
-                                type="name"
-                                name="name"
+                                type="username"
+                                name="username"
+                                onKeyPress={handleKeyPress}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.name}
-                                placeholder="Your Name"
+                                value={values.username}
+                                placeholder="user name"
                                 className="form-control inp_text"
-                                id="name"
+                                id="username"
                                 style={{
-                                  borderColor: errors.name ? "red" : "",
+                                  borderColor: errors.username ? "red" : "",
                                 }}
                               />
                             </div>
                             <p
                               className="error"
-                              style={{ color: errors.name ? "red" : "" }}
+                              style={{ color: errors.username ? "red" : "" }}
                             >
-                              {errors.name && touched.name && errors.name}
+                              {errors.username &&
+                                touched.username &&
+                                errors.username}
                             </p>
                             <div className="form-outline mb-4">
-                              <label
-                                className="form-label"
-                                htmlFor="form2Example17"
-                              >
+                              <label className="form-label" htmlFor="email">
                                 Email address
                               </label>
-                              <hr />
+
                               <input
                                 type="email"
                                 name="email"
+                                onKeyPress={handleKeyPress}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.email}
-                                placeholder="Enter email id / username"
-                                className="form-control inp_text"
+                                placeholder="Enter email Address"
+                                className="form-control "
                                 id="email"
                                 style={{
                                   borderColor: errors.email ? "red" : "",
@@ -169,35 +171,46 @@ const SignUp = () => {
                             </p>
 
                             <div className="form-outline mb-4">
-                              <label
-                                className="form-label"
-                                htmlFor="form2Example27"
-                              >
+                              <label className="form-label" htmlFor="password">
                                 Password
                               </label>
-                              <hr />
-                              <input
-                                type={showPassword ? "text" : "password"}
-                                name="password"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.password}
-                                placeholder="Enter password"
-                                // className="form-control"
-                                style={{
-                                  borderColor: errors.password ? "red" : "",
-                                }}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                              >
-                                {showPassword ? (
-                                  <AiOutlineEye />
-                                ) : (
-                                  <AiOutlineEyeInvisible />
-                                )}
-                              </button>
+                                
+                              <div className="row">
+                                <div className="col-ml-3">
+                                  <div className="input-group my-4 mx-4">
+                                    <input
+                                      type={showPassword ? "text" : "password"}
+                                      name="password"
+                                      onKeyPress={handleKeyPress}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                      value={values.password}
+                                      placeholder="Enter password"
+                                      className="form-control"
+                                      style={{
+                                        borderColor: errors.password
+                                          ? "red"
+                                          : "",
+                                      }}
+                                    />
+                                    <div className="input-group-btn">
+                                      <button
+                                        className="btn btn-outline-primary"
+                                        type="button"
+                                        onClick={() =>
+                                          setShowPassword(!showPassword)
+                                        }
+                                      >
+                                        {showPassword ? (
+                                          <AiOutlineEye />
+                                        ) : (
+                                          <AiOutlineEyeInvisible />
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                             <p
                               className="error"

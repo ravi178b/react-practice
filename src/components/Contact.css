@@ -4,3 +4,8 @@ background-color: #9A616D;
 .card shadow-2-strong{
     border: radius 3rem;;
 }
+.react-tel-input .form-control{
+width: 100%;
+height: auto;
+
+}

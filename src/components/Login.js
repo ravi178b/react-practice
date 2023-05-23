@@ -23,6 +23,11 @@ const schema = Yup.object().shape({
 });
 
 const Login = () => {
+  const handleKeyPress = (e) => {
+    if (e.charCode === 32) {
+      e.preventDefault();
+    }
+  };
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -69,7 +74,7 @@ const Login = () => {
   return (
     <>
       <section className="vh-100" style={{ backgroundColor: "#9A616D" }}>
-        <div className="container py-5 h-100">
+        <div className="container py-1 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col col-xl-10">
               <div className="card" style={{ borderRadius: "1rem" }}>
@@ -91,7 +96,6 @@ const Login = () => {
                     {({
                       isSubmitting,
                       values,
-
                       errors,
                       touched,
                       handleChange,
@@ -119,14 +123,15 @@ const Login = () => {
                               >
                                 Email address
                               </label>
-                              <hr />
+
                               <input
                                 type="email"
                                 name="email"
+                                onKeyPress={handleKeyPress}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.email}
-                                placeholder="Enter email id / username"
+                                placeholder="Enter email id "
                                 className="form-control inp_text"
                                 id="email"
                                 style={{
@@ -148,30 +153,42 @@ const Login = () => {
                               >
                                 Password
                               </label>
-                              <hr />
-                              <input
-                                type={showPassword ? "text" : "password"}
-                                name="password"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.password}
-                                placeholder="Enter password"
-                                //  className="form-control"
-                                style={{
-                                  borderColor: errors.password ? "red" : "",
-                                }}
-                              />
-
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                              >
-                                {showPassword ? (
-                                  <AiOutlineEye />
-                                ) : (
-                                  <AiOutlineEyeInvisible />
-                                )}
-                              </button>
+                              <div className="row">
+                                <div className="col-ml-3">
+                                  <div className="input-group my-4 mx-4">
+                                    <input
+                                      type={showPassword ? "text" : "password"}
+                                      name="password"
+                                      onKeyPress={handleKeyPress}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                      value={values.password}
+                                      placeholder="Enter password"
+                                      className="form-control"
+                                      style={{
+                                        borderColor: errors.password
+                                          ? "red"
+                                          : "",
+                                      }}
+                                    />
+                                    <div className="input-group-btn">
+                                      <button
+                                        className="btn btn-outline-primary"
+                                        type="button"
+                                        onClick={() =>
+                                          setShowPassword(!showPassword)
+                                        }
+                                      >
+                                        {showPassword ? (
+                                          <AiOutlineEye />
+                                        ) : (
+                                          <AiOutlineEyeInvisible />
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                             <p
                               className="error"
